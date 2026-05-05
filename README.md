@@ -51,4 +51,3 @@ The UI features a cozy, pastel cafe aesthetic:
 - Built using vanilla HTML5, CSS3, and JavaScript.
 - Icons are represented via native emojis.
 - Image placeholders are provided via Unsplash fallback links for convenience.
-# matcha-societyy
