@@ -6,11 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.nav-link');
     const allSections = document.querySelectorAll('main > section');
 
-    /** Paths must match files in assets/images/ exactly (including spaces in filenames). */
+    /** Paths must match files in assets/img/ exactly (including spaces in filenames). */
     const IMAGES = {
-        strawberryMatcha: 'assets/images/strawberry matcha.jpg',
-        icedMatchaLatte: 'assets/images/iced matcha lattee.jpg',
-        icedMatchaLatteWithFoam: 'assets/images/iced matcha latte with foam .jpg'
+        strawberryMatcha: 'assets/img/strawberry matcha.jpg',
+        icedMatchaLatte: 'assets/img/iced matcha lattee.jpg',
+        icedMatchaLatteWithFoam: 'assets/img/iced matcha latte with foam .jpg'
     };
 
     const FALLBACK_DRINK = {
@@ -336,12 +336,19 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(SAVED_RECIPES_KEY, JSON.stringify(savedRecipes));
     }
 
+    function migrateRecipeImageToImgFolder(recipe) {
+        if (!recipe || typeof recipe.image !== 'string') return recipe;
+        if (!recipe.image.startsWith('assets/images/')) return recipe;
+        return { ...recipe, image: recipe.image.replace('assets/images/', 'assets/img/') };
+    }
+
     function loadSavedRecipesFromStorage() {
         try {
             const raw = localStorage.getItem(SAVED_RECIPES_KEY);
             if (!raw) return [];
             const parsed = JSON.parse(raw);
-            return Array.isArray(parsed) ? parsed : [];
+            if (!Array.isArray(parsed)) return [];
+            return parsed.map(migrateRecipeImageToImgFolder);
         } catch (error) {
             return [];
         }
