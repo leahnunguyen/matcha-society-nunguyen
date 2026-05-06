@@ -6,6 +6,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.nav-link');
     const allSections = document.querySelectorAll('main > section');
 
+    /** Paths must match files in assets/images/ exactly (including spaces in filenames). */
+    const IMAGES = {
+        strawberryMatcha: 'assets/images/strawberry matcha.jpg',
+        icedMatchaLatte: 'assets/images/iced matcha lattee.jpg',
+        icedMatchaLatteWithFoam: 'assets/images/iced matcha latte with foam .jpg'
+    };
+
+    const FALLBACK_DRINK = {
+        id: 'fallback',
+        name: 'Build Your Matcha',
+        flavor: 'Choose a foam',
+        tag: 'Your Matcha',
+        score: 82,
+        image: IMAGES.icedMatchaLatte,
+        ingredients: 'Matcha, milk or water, and your custom steps',
+        tasteProfile: 'Select a foam topping to unlock the matching drink photo.',
+        category: 'classic',
+        tags: ['Custom'],
+        description:
+            'Pick Strawberry, Light, or Vanilla foam on the last step to see the right drink image. This is a placeholder iced matcha until then.',
+        note: 'Your whisk score still counts!',
+        match: { matchaType: null, iceLevel: null, sweetness: null, foam: null }
+    };
+
     const recipes = [
         {
             id: 'strawberry',
@@ -13,14 +37,20 @@ document.addEventListener('DOMContentLoaded', () => {
             flavor: 'Sweet & Fruity',
             tag: 'Sweet Pick',
             score: 95,
-            image: 'assets/images/strawberry matcha.jpg',
+            image: IMAGES.strawberryMatcha,
             ingredients: 'Ceremonial Matcha, Strawberry Puree, Oat Milk',
             tasteProfile: 'A perfect balance of earthy matcha and sweet strawberry.',
             category: 'strawberry',
             tags: ['Sweet', 'Fruity'],
             description: 'Sweet, milky and full of berry flavor.',
             note: 'Extra creamy. Best for hot days!',
-            match: { matchaType: 'ceremonial', iceLevel: 'medium', sweetness: 'medium', foam: 'strawberry-foam' }
+            foamKey: 'strawberry-foam',
+            match: {
+                matchaType: 'classic-matcha',
+                iceLevel: 'ice-medium',
+                sweetness: 'sweet-medium',
+                foam: 'strawberry-foam'
+            }
         },
         {
             id: 'classic',
@@ -28,14 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
             flavor: 'Refreshing & Earthy',
             tag: 'Cafe Favorite',
             score: 92,
-            image: 'assets/images/iced matcha lattee.jpg',
+            image: IMAGES.icedMatchaLatte,
             ingredients: 'Premium Matcha, Water, Ice, Light Syrup',
             tasteProfile: 'Clean, crisp, and pure matcha flavor.',
             category: 'classic',
             tags: ['Classic', 'Iced'],
             description: 'Smooth and refreshing with a clean matcha finish.',
             note: 'Clean and refreshing.',
-            match: { matchaType: 'premium', iceLevel: 'high', sweetness: 'low', foam: 'light-foam' }
+            foamKey: 'light-foam',
+            match: {
+                matchaType: 'iced-matcha-latte',
+                iceLevel: 'ice-high',
+                sweetness: 'sweet-low',
+                foam: 'light-foam'
+            }
         },
         {
             id: 'float',
@@ -43,28 +79,33 @@ document.addEventListener('DOMContentLoaded', () => {
             flavor: 'Creamy & Indulgent',
             tag: 'Creamy',
             score: 98,
-            image: 'assets/images/iced matcha latte with foam .jpg',
-            ingredients: 'Matcha Latte, Vanilla Ice Cream',
-            tasteProfile: 'Rich matcha topped with melting vanilla sweetness.',
-            category: 'float',
+            image: IMAGES.icedMatchaLatteWithFoam,
+            ingredients: 'Matcha Latte, Vanilla Foam',
+            tasteProfile: 'Rich matcha topped with airy vanilla sweetness.',
+            category: 'classic',
             tags: ['Dessert', 'Creamy'],
             description: 'A creamy iced matcha finished with sweet vanilla foam.',
             note: 'Dessert-like and decadent.',
-            match: { matchaType: 'latte', iceLevel: 'low', sweetness: 'medium', foam: 'vanilla-foam' }
+            foamKey: 'vanilla-foam',
+            match: {
+                matchaType: 'dirty-matcha',
+                iceLevel: 'ice-low',
+                sweetness: 'sweet-medium',
+                foam: 'vanilla-foam'
+            }
         }
     ];
+
+    const recipeByFoam = recipes.reduce((acc, recipe) => {
+        acc[recipe.foamKey] = recipe;
+        return acc;
+    }, {});
 
     const choices = {
         matchaType: null,
         iceLevel: null,
         sweetness: null,
         foam: null
-    };
-
-    const foamResultMap = {
-        'strawberry-foam': recipes.find((recipe) => recipe.match.foam === 'strawberry-foam'),
-        'light-foam': recipes.find((recipe) => recipe.match.foam === 'light-foam'),
-        'vanilla-foam': recipes.find((recipe) => recipe.match.foam === 'vanilla-foam')
     };
 
     function showSection(targetSection) {
@@ -136,21 +177,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
 
     const SAVED_RECIPES_KEY = 'matchaSavedRecipes';
-    let currentResultRecipe = recipes[0];
+    let currentResultRecipe = FALLBACK_DRINK;
     let savedRecipes = [];
     let activeSavedFilter = 'all';
 
     function toLabel(value) {
+        if (value == null || value === '') return '—';
         const map = {
+            'classic-matcha': 'Classic Matcha',
+            'strawberry-matcha': 'Strawberry Matcha',
+            'iced-matcha-latte': 'Iced Matcha Latte',
+            'dirty-matcha': 'Dirty Matcha',
+            'ice-low': 'Low',
+            'ice-medium': 'Medium',
+            'ice-high': 'High',
+            'sweet-low': 'Low',
+            'sweet-medium': 'Medium',
+            'sweet-high': 'High',
+            'strawberry-foam': 'Strawberry Foam',
+            'light-foam': 'Light Foam',
+            'vanilla-foam': 'Vanilla Foam',
             ceremonial: 'Ceremonial Matcha',
             premium: 'Premium Matcha',
             latte: 'Matcha Latte',
             low: 'Low',
             medium: 'Medium',
-            high: 'High',
-            'strawberry-foam': 'Strawberry Foam',
-            'light-foam': 'Light Foam',
-            'vanilla-foam': 'Vanilla Foam'
+            high: 'High'
         };
         return map[value] || value;
     }
@@ -237,8 +289,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return false;
     }
 
-    function pickRecipeByFoam() {
-        return foamResultMap[choices.foam] || recipes[0];
+    function getWhiskScoreForResult() {
+        const s = typeof whiskProgress === 'number' ? whiskProgress : 0;
+        return Math.max(60, Math.min(100, s || 82));
+    }
+
+    function getResultRecipe() {
+        const foam = choices.foam;
+        if (!foam || !recipeByFoam[foam]) {
+            return { ...FALLBACK_DRINK, score: getWhiskScoreForResult() };
+        }
+        return recipeByFoam[foam];
     }
 
     function renderResult(recipe) {
@@ -252,10 +313,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (resultFlavor) resultFlavor.textContent = recipe.description;
         if (resultScoreText) resultScoreText.textContent = `${recipe.score}/100`;
         if (resultScoreBar) resultScoreBar.style.width = `${recipe.score}%`;
-        if (resultMatchaType) resultMatchaType.textContent = toLabel(choices.matchaType);
-        if (resultIceAmount) resultIceAmount.textContent = toLabel(choices.iceLevel);
-        if (resultSweetness) resultSweetness.textContent = toLabel(choices.sweetness);
-        if (resultToppings) resultToppings.textContent = toLabel(choices.foam);
+        if (resultMatchaType) {
+            resultMatchaType.textContent = choices.matchaType ? toLabel(choices.matchaType) : '—';
+        }
+        if (resultIceAmount) {
+            resultIceAmount.textContent = choices.iceLevel ? toLabel(choices.iceLevel) : '—';
+        }
+        if (resultSweetness) {
+            resultSweetness.textContent = choices.sweetness ? toLabel(choices.sweetness) : '—';
+        }
+        if (resultToppings) {
+            resultToppings.textContent = choices.foam ? toLabel(choices.foam) : 'Not selected';
+        }
+    }
+
+    function refreshResultIfVisible() {
+        if (!resultSection || resultSection.classList.contains('hidden-section')) return;
+        renderResult(getResultRecipe());
     }
 
     function saveRecipesToStorage() {
@@ -345,6 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             card.classList.add('active');
             choices[group] = value;
+            refreshResultIfVisible();
         });
     });
 
@@ -401,10 +476,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (finishMatchaBtn) {
         finishMatchaBtn.addEventListener('click', () => {
-            if (!requireChoice('foam')) return;
-            const selectedRecipe = pickRecipeByFoam();
-            renderResult(selectedRecipe);
+            if (!requireChoice('matchaType')) return;
+            if (!requireChoice('iceLevel')) return;
+            if (!requireChoice('sweetness')) return;
+            renderResult(getResultRecipe());
             if (resultSection) showSection(resultSection);
+        });
+    }
+
+    const customizeAgainBtn = document.getElementById('customize-again-btn');
+    if (customizeAgainBtn) {
+        customizeAgainBtn.addEventListener('click', () => {
+            if (chooseMatchaSection) showSection(chooseMatchaSection);
         });
     }
 

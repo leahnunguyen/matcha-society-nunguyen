@@ -118,9 +118,10 @@
                 <p class="subtitle">Pick the base that defines your drink.</p>
 
                 <div class="toppings-grid">
-                    <button class="topping-card choice-card" data-group="matchaType" data-value="ceremonial" type="button">Ceremonial Matcha</button>
-                    <button class="topping-card choice-card" data-group="matchaType" data-value="premium" type="button">Premium Matcha</button>
-                    <button class="topping-card choice-card" data-group="matchaType" data-value="latte" type="button">Matcha Latte</button>
+                    <button class="topping-card choice-card" data-group="matchaType" data-value="classic-matcha" type="button">Classic Matcha</button>
+                    <button class="topping-card choice-card" data-group="matchaType" data-value="strawberry-matcha" type="button">Strawberry Matcha</button>
+                    <button class="topping-card choice-card" data-group="matchaType" data-value="iced-matcha-latte" type="button">Iced Matcha Latte</button>
+                    <button class="topping-card choice-card" data-group="matchaType" data-value="dirty-matcha" type="button">Dirty Matcha</button>
                 </div>
 
                 <div class="action-grid toppings-actions">
@@ -146,9 +147,9 @@
                 <p class="subtitle">Adjust how chilled your matcha should be.</p>
 
                 <div class="toppings-grid">
-                    <button class="topping-card choice-card" data-group="iceLevel" data-value="low" type="button">Low Ice</button>
-                    <button class="topping-card choice-card" data-group="iceLevel" data-value="medium" type="button">Medium Ice</button>
-                    <button class="topping-card choice-card" data-group="iceLevel" data-value="high" type="button">High Ice</button>
+                    <button class="topping-card choice-card" data-group="iceLevel" data-value="ice-low" type="button">Low Ice</button>
+                    <button class="topping-card choice-card" data-group="iceLevel" data-value="ice-medium" type="button">Medium Ice</button>
+                    <button class="topping-card choice-card" data-group="iceLevel" data-value="ice-high" type="button">High Ice</button>
                 </div>
 
                 <div class="action-grid toppings-actions">
@@ -174,9 +175,9 @@
                 <p class="subtitle">Balance earthy matcha with your sweetness level.</p>
 
                 <div class="toppings-grid">
-                    <button class="topping-card choice-card" data-group="sweetness" data-value="low" type="button">Low Sweetness</button>
-                    <button class="topping-card choice-card" data-group="sweetness" data-value="medium" type="button">Medium Sweetness</button>
-                    <button class="topping-card choice-card" data-group="sweetness" data-value="high" type="button">High Sweetness</button>
+                    <button class="topping-card choice-card" data-group="sweetness" data-value="sweet-low" type="button">Low Sweetness</button>
+                    <button class="topping-card choice-card" data-group="sweetness" data-value="sweet-medium" type="button">Medium Sweetness</button>
+                    <button class="topping-card choice-card" data-group="sweetness" data-value="sweet-high" type="button">High Sweetness</button>
                 </div>
 
                 <div class="action-grid toppings-actions">
@@ -223,12 +224,12 @@
 
                 <div class="result-layout">
                     <div class="result-card">
-                        <div class="tag-badge" id="result-tag">Sweet Pick</div>
+                        <div class="tag-badge" id="result-tag">Your Matcha</div>
                         <div class="result-image-container">
-                            <img id="result-image" src="assets/images/strawberry matcha.jpg" alt="Strawberry Matcha" class="result-image">
+                            <img id="result-image" src="assets/images/iced matcha lattee.jpg" alt="" class="result-image">
                         </div>
-                        <h3 class="drink-name" id="result-name">Strawberry Matcha</h3>
-                        <p class="drink-flavor" id="result-flavor">Sweet, milky and full of berry flavor.</p>
+                        <h3 class="drink-name" id="result-name">Build Your Matcha</h3>
+                        <p class="drink-flavor" id="result-flavor">Finish the steps and pick a foam to reveal your drink photo and description.</p>
                         
                         <div class="drink-icons">
                             <div class="icon-item">
@@ -284,8 +285,9 @@
                         </div>
                         <div class="action-grid">
                             <button id="save-recipe-btn" class="btn btn-dark btn-full"><i data-lucide="heart"></i> Save Recipe</button>
+                            <button type="button" id="customize-again-btn" class="btn btn-white btn-half"><i data-lucide="sliders-horizontal"></i> Customize again</button>
                             <button onclick="window.location.href='#home'; location.reload();" class="btn btn-white btn-half"><i data-lucide="rotate-ccw"></i> Make Again</button>
-                            <button class="btn btn-white btn-half"><i data-lucide="share-2"></i> Share</button>
+                            <button type="button" class="btn btn-white btn-half"><i data-lucide="share-2"></i> Share</button>
                         </div>
                     </div>
                 </div>
